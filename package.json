@@ -1,9 +1,9 @@
 {
   "name": "use-sr",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
-  "main": "./dist/useSingleRequest.js",
-  "types": "./dist/useSingleRequest.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "yarn tsc -p ./tsconfig.json"
   },
@@ -20,5 +20,12 @@
   "license": "MIT",
   "files": [
     "dist/"
-  ]
+  ],
+  "dependencies": {
+    "recoil": "^0.7.7"
+  },
+  "devDependencies": {
+    "tsc": "^2.0.4",
+    "typescript": "^5.0.4"
+  }
 }
