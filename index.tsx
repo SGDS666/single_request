@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createContext, useCallback, useContext, useMemo } from 'react';
 import { atom, RecoilRoot, useRecoilState } from 'recoil';
 
@@ -73,23 +73,34 @@ export const useSingleRequest = (
   const [isError, setError] = useRecoilState<boolean>(errorAtom);
   const [errorMessage, setErrorMessage] = useRecoilState<string>(messageAtom);
 
+  useEffect(() => {
+    if (!urlMap.has(urlkey)) {
+      urlMap.set(urlkey, undefined)
+      request()
+        .then((res) => {
+          const data = formater ? formater(res) : res;
+          setData(data);
 
-  if (!urlMap.has(urlkey)) {
-    urlMap.set(urlkey, undefined)
-    request()
-      .then((res) => {
-        const data = formater ? formater(res) : res;
-        setData(data);
+          setLoading(false);
+          urlMap.set(urlkey, data);
+          // console.log({ urlMap })
+        })
+        .catch((reason) => {
+          setErrorMessage(reason);
+          setError(true);
+        });
+    }
+  }, [formater, request, setData, setError, setErrorMessage, setLoading, urlMap, urlkey])
 
-        setLoading(false);
-        urlMap.set(urlkey, data);
-        console.log({ urlMap })
-      })
-      .catch((reason) => {
-        setErrorMessage(reason);
-        setError(true);
-      });
-  }
+
+  useEffect(() => {
+    if (!data && urlMap.has(urlkey)) {
+      setData(urlMap.get(urlkey))
+    }
+  }, [data, setData, urlMap, urlkey])
+
+
+
   const runRequest = useCallback((params?: any) => {
     request(params)
       .then((res) => {
