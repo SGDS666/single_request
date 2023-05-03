@@ -4,6 +4,7 @@
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "homepage": "https://github.com/SGDS666/single_request",
   "scripts": {
     "build": "yarn tsc -p ./tsconfig.json"
   },
