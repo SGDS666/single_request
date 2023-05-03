@@ -1,0 +1,24 @@
+{
+  "name": "use-sr",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./dist/useSingleRequest.js",
+  "types": "./dist/useSingleRequest.d.ts",
+  "scripts": {
+    "build": "yarn tsc -p ./tsconfig.json"
+  },
+  "keywords": [
+    "TypeScript",
+    "javascript",
+    "react",
+    "easy",
+    "request",
+    "single",
+    "hooks"
+  ],
+  "author": "sgds",
+  "license": "MIT",
+  "files": [
+    "dist/"
+  ]
+}
