@@ -1,6 +1,6 @@
 {
   "name": "use-sr",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -20,7 +20,8 @@
   "author": "sgds",
   "license": "MIT",
   "files": [
-    "dist/"
+    "dist/",
+    "README(cn).md"
   ],
   "dependencies": {
     "recoil": "^0.7.7"
