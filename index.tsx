@@ -62,7 +62,7 @@ export const useSingleRequest = (
   }, [createKey, urlkey])
 
   const dataAtom = createAtom(datakey, undefined)
-  const loadingAtom = createAtom(loadingKey, false)
+  const loadingAtom = createAtom(loadingKey, true)
   const errorAtom = createAtom(errorKey, false)
   const messageAtom = createAtom(messageKey, "")
 
