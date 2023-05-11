@@ -88,3 +88,10 @@ So you noticed that there are two ways to update data
 One is to update setData locally
 One is runRequest requesting new data updates
 
+There is also an optional fourth parameter
+
+{
+  log?: boolean,
+  refreshInterval?: number  (ms)
+}
+

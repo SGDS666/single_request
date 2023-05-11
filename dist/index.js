@@ -57,7 +57,7 @@ const SingleRoot = ({ children }) => {
         react_1.default.createElement(exports.SRProvider, null, children)));
 };
 exports.SingleRoot = SingleRoot;
-const useSingleRequest = (urlkey, request, formater) => {
+const useSingleRequest = (urlkey, request, formater, config) => {
     const { urlMap, createAtom, createKey } = (0, react_2.useContext)(SRContext);
     const [datakey, loadingKey, errorKey, messageKey] = (0, react_2.useMemo)(() => {
         return createKey(urlkey);
@@ -73,6 +73,9 @@ const useSingleRequest = (urlkey, request, formater) => {
     (0, react_1.useEffect)(() => {
         if (!urlMap.has(urlkey)) {
             urlMap.set(urlkey, undefined);
+            if (config === null || config === void 0 ? void 0 : config.log) {
+                console.log(urlkey, "run");
+            }
             request()
                 .then((res) => {
                 const data = formater ? formater(res) : res;
@@ -85,12 +88,7 @@ const useSingleRequest = (urlkey, request, formater) => {
                 setError(true);
             });
         }
-    }, [formater, request, setData, setError, setErrorMessage, setLoading, urlMap, urlkey]);
-    (0, react_1.useEffect)(() => {
-        if (!data && urlMap.has(urlkey)) {
-            setData(urlMap.get(urlkey));
-        }
-    }, [data, setData, urlMap, urlkey]);
+    }, [config === null || config === void 0 ? void 0 : config.log, formater, request, setData, setError, setErrorMessage, setLoading, urlMap, urlkey]);
     const runRequest = (0, react_2.useCallback)((params) => {
         request(params)
             .then((res) => {
@@ -103,7 +101,20 @@ const useSingleRequest = (urlkey, request, formater) => {
             setErrorMessage(reason);
             setError(true);
         });
-    }, [formater, request, setData, setError, setErrorMessage, setLoading, urlMap, urlkey]);
+    }, [urlkey]);
+    (0, react_1.useEffect)(() => {
+        if (config === null || config === void 0 ? void 0 : config.refreshInterval) {
+            const timer = setInterval(() => {
+                if (config.log) {
+                    console.log(urlkey, "refreshInterval run");
+                }
+                runRequest();
+            }, config.refreshInterval);
+            return () => {
+                clearInterval(timer);
+            };
+        }
+    }, [config === null || config === void 0 ? void 0 : config.log, config === null || config === void 0 ? void 0 : config.refreshInterval, runRequest, urlkey]);
     return {
         data,
         setData,

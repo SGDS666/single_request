@@ -47,13 +47,25 @@ export const SingleRoot: React.FC<{ children: any }> = ({ children }) => {
 }
 
 
+interface singleRequestConfig {
+
+  awaitData: any
+}
 
 
 export const useSingleRequest = (
   urlkey: string,
   request: (params?: any) => Promise<any>,
-  formater?: (res: any) => any
+  formater?: (res: any) => any,
+  config?: {
+    log?: boolean,
+    refreshInterval?: number
+  }
+
 ) => {
+
+
+
   const { urlMap, createAtom, createKey } = useContext(SRContext)
 
   const [datakey, loadingKey, errorKey, messageKey] = useMemo(() => {
@@ -76,6 +88,9 @@ export const useSingleRequest = (
   useEffect(() => {
     if (!urlMap.has(urlkey)) {
       urlMap.set(urlkey, undefined)
+      if (config?.log) {
+        console.log(urlkey, "run")
+      }
       request()
         .then((res) => {
           const data = formater ? formater(res) : res;
@@ -89,17 +104,26 @@ export const useSingleRequest = (
           setErrorMessage(reason);
           setError(true);
         });
+
+
     }
-  }, [formater, request, setData, setError, setErrorMessage, setLoading, urlMap, urlkey])
+
+  }, [config?.log, formater, request, setData, setError, setErrorMessage, setLoading, urlMap, urlkey])
 
 
-  useEffect(() => {
-    if (!data && urlMap.has(urlkey)) {
-      setData(urlMap.get(urlkey))
-    }
-  }, [data, setData, urlMap, urlkey])
+  // useEffect(() => { //被recoil维护数据 不再需要
+  //   if (!data && urlMap.has(urlkey)) {
+  //     if (urlMap.get(urlkey)) {
+  //       if (config?.log) {
+  //         console.log(urlkey, "getCacheData")
+  //       }
+  //       setData(urlMap.get(urlkey))
+  //       setLoading(false)
+  //     }
 
+  //   }
 
+  // }, [config?.log, data, setData, setLoading, urlMap, urlkey])
 
   const runRequest = useCallback((params?: any) => {
     request(params)
@@ -115,7 +139,26 @@ export const useSingleRequest = (
         setErrorMessage(reason);
         setError(true);
       });
-  }, [formater, request, setData, setError, setErrorMessage, setLoading, urlMap, urlkey])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlkey])
+
+  useEffect(() => {
+    if (config?.refreshInterval) {
+      const timer = setInterval(() => {
+        if (config.log) {
+          console.log(urlkey, "refreshInterval run")
+        }
+        runRequest()
+
+      }, config.refreshInterval)
+      return () => {
+        clearInterval(timer)
+      }
+    }
+  }, [config?.log, config?.refreshInterval, runRequest, urlkey])
+
+
 
 
   return {
